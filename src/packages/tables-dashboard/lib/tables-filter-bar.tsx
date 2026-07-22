@@ -1,0 +1,92 @@
+"use client";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { TableFilters, GameType, TableStatus } from "./types";
+
+const GAME_TYPES: { value: GameType | "all"; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "texas-holdem", label: "Texas Hold'em" },
+  { value: "omaha", label: "Omaha" },
+  { value: "stud", label: "Stud" },
+];
+
+const STATUSES: { value: TableStatus | "all"; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];
+
+export interface TablesFilterBarProps {
+  filters: TableFilters;
+  availableStakes: string[];
+  onChange: (filters: TableFilters) => void;
+}
+
+export function TablesFilterBar({
+  filters,
+  availableStakes,
+  onChange,
+}: TablesFilterBarProps) {
+  const set = (key: keyof TableFilters, value: string) =>
+    onChange({ ...filters, [key]: value });
+  const onStakesChange = (v: string | null) => set("stakes", v || "all");
+
+  return (
+    <div className="flex flex-wrap items-center gap-4">
+      <Select
+        value={filters.gameType}
+        onValueChange={(v) => set("gameType", v as GameType | "all")}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {GAME_TYPES.map((g) => (
+            <SelectItem key={g.value} value={g.value}>
+              {g.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={filters.stakes}
+        onValueChange={onStakesChange}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          {availableStakes.map((s) => (
+            <SelectItem key={s} value={s}>
+              {s}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={filters.status}
+        onValueChange={(v) => set("status", v as TableStatus | "all")}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {STATUSES.map((s) => (
+            <SelectItem key={s.value} value={s.value}>
+              {s.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}

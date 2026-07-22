@@ -19,9 +19,10 @@ const GAME_TYPE_LABELS: Record<string, string> = {
 
 export interface TablesDashboardProps {
   tables: TableRowType[];
+  onToggle?: (tableId: string) => void;
 }
 
-export function TablesDashboard({ tables }: TablesDashboardProps) {
+export function TablesDashboard({ tables, onToggle }: TablesDashboardProps) {
   if (tables.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -42,6 +43,7 @@ export function TablesDashboard({ tables }: TablesDashboardProps) {
             <TableHead className="text-right">Hands Played</TableHead>
             <TableHead className="text-right">Players</TableHead>
             <TableHead className="text-right">Flagged</TableHead>
+            {onToggle && <TableHead><span className="sr-only">Toggle</span></TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -80,6 +82,16 @@ export function TablesDashboard({ tables }: TablesDashboardProps) {
                   </span>
                 )}
               </TableCell>
+              {onToggle && (
+                <TableCell>
+                  <button
+                    onClick={() => onToggle(table.id)}
+                    className="text-sm text-primary hover:underline cursor-pointer"
+                  >
+                    {table.status === "active" ? "Deactivate" : "Activate"}
+                  </button>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

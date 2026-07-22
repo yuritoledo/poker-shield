@@ -58,3 +58,11 @@ The five canonical triage roles use the default label names. See `docs/agents/tr
 ### Domain docs
 
 Single-context — one `CONTEXT.md` at repo root. See `docs/agents/domain.md`.
+
+### Ponytail
+
+Lazy senior dev mode. Before writing code, climbs a ladder: YAGNI →
+reuse → stdlib → native platform → installed deps → one line → minimum
+code. Run `npm run build` first when making large changes to ensure the
+type-checking and linting pass with the minimal approach. Default: `full`.
+See `docs/agents/ponytail.md`.
