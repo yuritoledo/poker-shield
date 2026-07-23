@@ -3,3 +3,4 @@
 
 export type { TableRow, TableFilters, GameType, TableStatus, TableToggleAction } from "./lib/types";
 export { mockTables } from "./lib/mock-data";
+export { TablesDashboard } from "./lib/tables-dashboard";

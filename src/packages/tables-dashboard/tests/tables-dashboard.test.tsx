@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { describe, it, expect } from "vitest";
-import { mockTables } from "../index";
+import { render, screen } from "@testing-library/react";
+import { mockTables, TablesDashboard } from "../index";
 
 describe("TablesDashboard types", () => {
   it("mockTables is an array", () => {
@@ -36,5 +37,73 @@ describe("TablesDashboard types", () => {
     const hasInactive = mockTables.some((t) => t.status === "inactive");
     expect(hasActive).toBe(true);
     expect(hasInactive).toBe(true);
+  });
+});
+
+describe("TablesDashboard component", () => {
+  it("renders all tables from mock data", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    expect(screen.getByText("High Stakes")).toBeInTheDocument();
+    expect(screen.getByText("Night Owls")).toBeInTheDocument();
+    expect(screen.getByText("Omaha Beach")).toBeInTheDocument();
+    expect(screen.getByText("Stud Farm")).toBeInTheDocument();
+    expect(screen.getByText("The River")).toBeInTheDocument();
+    expect(screen.getByText("Lowball")).toBeInTheDocument();
+    expect(screen.getByText("Closed for Maintenance")).toBeInTheDocument();
+  });
+
+  it("shows flagged player count as a red badge when > 0", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    // The River has 3 flagged players, should show as a destructive badge
+    const riverRow = screen
+      .getAllByRole("row")
+      .find((row) => row.textContent?.includes("The River"));
+    expect(riverRow).toBeTruthy();
+    expect(riverRow!.textContent).toContain("3");
+    // High Stakes has 1 flagged player
+    const highStakesRow = screen
+      .getAllByRole("row")
+      .find((row) => row.textContent?.includes("High Stakes"));
+    expect(highStakesRow).toBeTruthy();
+    expect(highStakesRow!.textContent).toContain("1");
+  });
+
+  it("shows 0 flagged count without destructive badge", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    // Omaha Beach has 0 flagged players
+    const omahaRow = screen
+      .getAllByRole("row")
+      .find((row) => row.textContent?.includes("Omaha Beach"));
+    expect(omahaRow).toBeTruthy();
+    expect(omahaRow!.textContent).toContain("0");
+  });
+
+  it("renders column headers", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    expect(screen.getByText("Name")).toBeInTheDocument();
+    expect(screen.getByText("Game Type")).toBeInTheDocument();
+    expect(screen.getByText("Stakes")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Hands Played")).toBeInTheDocument();
+    expect(screen.getByText("Players")).toBeInTheDocument();
+    expect(screen.getByText("Flagged")).toBeInTheDocument();
+  });
+
+  it("shows empty state when no tables", () => {
+    render(<TablesDashboard tables={[]} />);
+    expect(screen.getByText("No tables found.")).toBeInTheDocument();
+  });
+
+  it("renders game type badges", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    expect(screen.getAllByText("Texas Hold'em").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Omaha").length).toBeGreaterThan(0);
+    expect(screen.getByText("Stud")).toBeInTheDocument();
+  });
+
+  it("renders status badges for active and inactive tables", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    expect(screen.getAllByText("Active").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Inactive").length).toBeGreaterThan(0);
   });
 });
