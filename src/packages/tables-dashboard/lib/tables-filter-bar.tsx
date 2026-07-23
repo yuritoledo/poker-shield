@@ -28,14 +28,14 @@ export interface TablesFilterBarProps {
   onChange: (filters: TableFilters) => void;
 }
 
-export function TablesFilterBar({
-  filters,
-  availableStakes,
-  onChange,
-}: TablesFilterBarProps) {
-  const set = (key: keyof TableFilters, value: string) =>
+export function TablesFilterBar(props: TablesFilterBarProps) {
+  const { filters, availableStakes, onChange } = props;
+  function set(key: keyof TableFilters, value: string) {
     onChange({ ...filters, [key]: value });
-  const onStakesChange = (v: string | null) => set("stakes", v || "all");
+  }
+  function onStakesChange(v: string | null) {
+    set("stakes", v || "all");
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-4">

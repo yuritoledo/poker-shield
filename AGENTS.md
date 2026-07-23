@@ -27,6 +27,13 @@ variants. If a feature doesn't fit, build a new component instead of
 adding another prop to the existing one. 3-5 props is a sweet spot;
 7+ is a warning sign.
 
+## Code Style
+
+- Arrow functions (` =>`) for `map`, `reduce`, `filter` callbacks only. Use regular `function`
+  everywhere else.
+- Destructure props in the function signature for 1-2 props. For 3+, use
+  `const {} = props` in the component body instead.
+
 ## Deep Modules
 
 ## Commands
