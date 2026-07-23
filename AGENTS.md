@@ -58,6 +58,11 @@ partial test data instead of `as` assertions.
 
 Issues are tracked on GitHub (when a remote is configured). See `docs/agents/issue-tracker.md`.
 
+### Specs
+
+Specs and task descriptions live on GitHub issues, not .md files in the repo.
+Tracked on the [Poker Shield Board](https://github.com/users/yuritoledo/projects/1).
+
 ### Triage labels
 
 The five canonical triage roles use the default label names. See `docs/agents/triage-labels.md`.
