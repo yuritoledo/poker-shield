@@ -92,7 +92,7 @@ describe("TablesDashboard component", () => {
 
   it("shows empty state when no tables", () => {
     render(<TablesDashboard tables={[]} />);
-    expect(screen.getByText("No tables found.")).toBeInTheDocument();
+    expect(screen.getByText("No tables match your filters.")).toBeInTheDocument();
   });
 
   it("renders game type badges", () => {
