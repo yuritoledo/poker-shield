@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { mockTables, TablesDashboard } from "../index";
 
 describe("TablesDashboard types", () => {
@@ -105,5 +106,27 @@ describe("TablesDashboard component", () => {
     render(<TablesDashboard tables={mockTables} />);
     expect(screen.getAllByText("Active").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Inactive").length).toBeGreaterThan(0);
+  });
+});
+
+describe("TablesDashboard toggle", () => {
+  it("does not render toggle column when onToggle is not provided", () => {
+    render(<TablesDashboard tables={mockTables} />);
+    expect(screen.queryByText("Activate")).toBeNull();
+    expect(screen.queryByText("Deactivate")).toBeNull();
+  });
+
+  it("renders toggle buttons when onToggle is provided", () => {
+    render(<TablesDashboard tables={mockTables} onToggle={() => {}} />);
+    expect(screen.getAllByText("Deactivate").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Activate").length).toBeGreaterThan(0);
+  });
+
+  it("calls onToggle with the table id on click", async () => {
+    const onToggle = vi.fn();
+    const user = userEvent.setup();
+    render(<TablesDashboard tables={mockTables} onToggle={onToggle} />);
+    await user.click(screen.getAllByText("Deactivate")[0]);
+    expect(onToggle).toHaveBeenCalledWith("1");
   });
 });

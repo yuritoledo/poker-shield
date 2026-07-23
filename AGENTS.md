@@ -27,6 +27,13 @@ variants. If a feature doesn't fit, build a new component instead of
 adding another prop to the existing one. 3-5 props is a sweet spot;
 7+ is a warning sign.
 
+## Code Style
+
+- Arrow functions (` =>`) for `map`, `reduce`, `filter` callbacks only. Use regular `function`
+  everywhere else.
+- Destructure props in the function signature for 1-2 props. For 3+, use
+  `const {} = props` in the component body instead.
+
 ## Deep Modules
 
 ## Commands
@@ -58,3 +65,11 @@ The five canonical triage roles use the default label names. See `docs/agents/tr
 ### Domain docs
 
 Single-context — one `CONTEXT.md` at repo root. See `docs/agents/domain.md`.
+
+### Ponytail
+
+Lazy senior dev mode. Before writing code, climbs a ladder: YAGNI →
+reuse → stdlib → native platform → installed deps → one line → minimum
+code. Run `npm run build` first when making large changes to ensure the
+type-checking and linting pass with the minimal approach. Default: `full`.
+See `docs/agents/ponytail.md`.
