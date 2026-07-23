@@ -9,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, Table2 } from "lucide-react";
 import type { TableRow as TableRowType } from "./types";
 
 const GAME_TYPE_LABELS: Record<string, string> = {
@@ -26,7 +28,10 @@ export function TablesDashboard({ tables, onToggle }: TablesDashboardProps) {
   if (tables.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm text-muted-foreground">No tables found.</p>
+        <Table2 className="h-12 w-12 text-muted-foreground/40" />
+        <p className="mt-4 text-sm text-muted-foreground">
+          No tables match your filters.
+        </p>
       </div>
     );
   }
@@ -48,48 +53,60 @@ export function TablesDashboard({ tables, onToggle }: TablesDashboardProps) {
         </TableHeader>
         <TableBody>
           {tables.map((table) => (
-            <TableRow key={table.id}>
+            <TableRow key={table.id} className="*:py-2 text-sm">
               <TableCell className="font-medium">{table.name}</TableCell>
               <TableCell>
-                <Badge variant="secondary">
+                <Badge variant="outline" className="text-xs font-normal">
                   {GAME_TYPE_LABELS[table.gameType] ?? table.gameType}
                 </Badge>
               </TableCell>
-              <TableCell>{table.stakes}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    table.status === "active" ? "default" : "outline"
-                  }
-                >
-                  {table.status === "active" ? "Active" : "Inactive"}
-                </Badge>
+              <TableCell className="font-mono tabular-nums">
+                {table.stakes}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell>
+                <span className="inline-flex items-center gap-1.5">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      table.status === "active"
+                        ? "bg-emerald-500"
+                        : "bg-zinc-500"
+                    }`}
+                  />
+                  <span className="text-sm">
+                    {table.status === "active" ? "Active" : "Inactive"}
+                  </span>
+                </span>
+              </TableCell>
+              <TableCell className="text-right font-mono tabular-nums">
                 {table.handsPlayed.toLocaleString()}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="text-right font-mono tabular-nums">
                 {table.playerCount}
               </TableCell>
               <TableCell className="text-right">
                 {table.flaggedPlayerCount > 0 ? (
-                  <Badge variant="destructive" className="tabular-nums">
+                  <Badge
+                    variant="destructive"
+                    className="inline-flex items-center gap-1 font-mono tabular-nums"
+                  >
+                    <AlertTriangle className="h-3 w-3" />
                     {table.flaggedPlayerCount}
                   </Badge>
                 ) : (
-                  <span className="tabular-nums text-muted-foreground">
-                    {table.flaggedPlayerCount}
+                  <span className="font-mono tabular-nums text-muted-foreground">
+                    0
                   </span>
                 )}
               </TableCell>
               {onToggle && (
                 <TableCell>
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => onToggle(table.id)}
-                    className="text-sm text-primary hover:underline cursor-pointer"
                   >
                     {table.status === "active" ? "Deactivate" : "Activate"}
-                  </button>
+                  </Button>
                 </TableCell>
               )}
             </TableRow>

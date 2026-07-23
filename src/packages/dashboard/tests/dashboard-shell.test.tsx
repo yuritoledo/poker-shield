@@ -17,14 +17,14 @@ describe("DashboardShell", () => {
     expect(screen.getByRole("link", { name: /alerts/i })).toBeInTheDocument();
   });
 
-  it("shows the user name in the header", () => {
+  it("shows the user initials in the header", () => {
     render(
       <DashboardShell user={{ name: "Yuri" }} onLogout={async () => {}}>
         <div>content</div>
       </DashboardShell>,
     );
 
-    expect(screen.getByText("Yuri")).toBeInTheDocument();
+    expect(screen.getByText("YU")).toBeInTheDocument();
   });
 
   it("renders children in the content area", () => {
@@ -63,6 +63,6 @@ describe("DashboardShell", () => {
     );
 
     const playersLink = screen.getByRole("link", { name: /players/i });
-    expect(playersLink).toHaveAttribute("data-active", "true");
+    expect(playersLink.className).toContain("text-primary");
   });
 });

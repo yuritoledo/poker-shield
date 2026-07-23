@@ -4,6 +4,9 @@
 "use client";
 
 import { useState } from "react";
+import { AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface LoginFormProps {
   onLogin: (email: string, password: string) => Promise<void>;
@@ -22,48 +25,48 @@ export function LoginForm({ onLogin, error, isLoading }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div role="alert" className="text-red-500 text-sm">
-          {error}
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+        >
+          <AlertCircle className="mt-0.5 size-4 shrink-0" />
+          <span>{error}</span>
         </div>
       )}
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium">
+      <div className="space-y-2">
+        <label htmlFor="email" className="block text-sm font-medium text-foreground">
           Email
         </label>
-        <input
+        <Input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          placeholder="ops@example.com"
           required
         />
       </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium">
+      <div className="space-y-2">
+        <label htmlFor="password" className="block text-sm font-medium text-foreground">
           Password
         </label>
-        <input
+        <Input
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-      >
+      <Button type="submit" disabled={isLoading} className="w-full">
         {isLoading ? "Signing in..." : "Sign in"}
-      </button>
+      </Button>
     </form>
   );
 }

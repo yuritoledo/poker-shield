@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SlidersHorizontal } from "lucide-react";
 import type { TableFilters, GameType, TableStatus } from "./types";
 
 const GAME_TYPES: { value: GameType | "all"; label: string }[] = [
@@ -39,6 +40,11 @@ export function TablesFilterBar(props: TablesFilterBarProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-4">
+      <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <SlidersHorizontal className="h-4 w-4" />
+        Filters
+      </span>
+
       <Select
         value={filters.gameType}
         onValueChange={(v) => set("gameType", v as GameType | "all")}
