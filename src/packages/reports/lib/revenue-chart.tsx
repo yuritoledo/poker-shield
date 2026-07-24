@@ -34,13 +34,13 @@ export function RevenueChart({ data }: RevenueChartProps) {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
-                stroke="hsl(var(--muted-foreground))"
+                tick={{ fontSize: 11, fill: "var(--foreground)" }}
+                stroke="var(--muted-foreground)"
                 interval="preserveStartEnd"
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
-                stroke="hsl(var(--muted-foreground))"
+                tick={{ fontSize: 11, fill: "var(--foreground)" }}
+                stroke="var(--muted-foreground)"
                 tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
               />
               <Tooltip
@@ -49,10 +49,11 @@ export function RevenueChart({ data }: RevenueChartProps) {
                   border: "1px solid hsl(var(--border))",
                   borderRadius: "6px",
                   fontSize: "12px",
+                  color: "var(--foreground)",
                 }}
               />
               <Legend
-                wrapperStyle={{ fontSize: "12px", paddingTop: "8px" }}
+                wrapperStyle={{ fontSize: "12px", paddingTop: "8px", color: "var(--foreground)" }}
               />
               <Line
                 type="monotone"
