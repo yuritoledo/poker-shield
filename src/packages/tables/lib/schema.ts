@@ -1,76 +1,80 @@
-// Database schema for poker-shield.
+// Database schema for poker-shield (SQLite).
 // This is PRIVATE — lives in lib/. Only our package's entry point exports it.
 
-import { pgTable, text, timestamp, uuid, integer, boolean, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+
+function uid() {
+  return crypto.randomUUID();
+}
+
+function now() {
+  return new Date().toISOString();
+}
 
 // --- Tenants (multi-tenant) ---
-export const tenants = pgTable("tenants", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const tenants = sqliteTable("tenants", {
+  id: text("id").primaryKey().$defaultFn(uid),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: text("created_at").notNull().$defaultFn(now),
+  updatedAt: text("updated_at").notNull().$defaultFn(now),
 });
 
 // --- Users (within a tenant) ---
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey().$defaultFn(uid),
+  tenantId: text("tenant_id").notNull().references(() => tenants.id),
   email: text("email").notNull(),
   name: text("name").notNull(),
-  role: text("role", { enum: ["admin", "operator", "viewer"] }).notNull().default("viewer"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  role: text("role").notNull().default("viewer"),
+  createdAt: text("created_at").notNull().$defaultFn(now),
 });
 
 // --- Tables (poker tables) ---
-export const tables = pgTable("tables", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+export const tables = sqliteTable("tables", {
+  id: text("id").primaryKey().$defaultFn(uid),
+  tenantId: text("tenant_id").notNull().references(() => tenants.id),
   name: text("name").notNull(),
-  gameType: text("game_type", { enum: ["texas-holdem", "omaha", "stud"] }).notNull(),
+  gameType: text("game_type").notNull(), // "texas-holdem" | "omaha" | "stud"
   stakes: text("stakes").notNull(), // e.g. "1/2", "2/5"
   handsPlayed: integer("hands_played").notNull().default(0),
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().$defaultFn(now),
 });
 
 // --- Players (on a table) ---
-export const players = pgTable("players", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  tableId: uuid("table_id").notNull().references(() => tables.id),
+export const players = sqliteTable("players", {
+  id: text("id").primaryKey().$defaultFn(uid),
+  tableId: text("table_id").notNull().references(() => tables.id),
   alias: text("alias").notNull(),
   handsPlayed: integer("hands_played").notNull().default(0),
   suspiciousScore: integer("suspicious_score").notNull().default(0),
-  isFlagged: boolean("is_flagged").notNull().default(false),
-  lastActive: timestamp("last_active").defaultNow().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  isFlagged: integer("is_flagged", { mode: "boolean" }).notNull().default(false),
+  lastActive: text("last_active").notNull().$defaultFn(now),
+  createdAt: text("created_at").notNull().$defaultFn(now),
 });
 
 // --- Hands (individual hands played) ---
-export const hands = pgTable("hands", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  tableId: uuid("table_id").notNull().references(() => tables.id),
-  playerId: uuid("player_id").notNull().references(() => players.id),
+export const hands = sqliteTable("hands", {
+  id: text("id").primaryKey().$defaultFn(uid),
+  tableId: text("table_id").notNull().references(() => tables.id),
+  playerId: text("player_id").notNull().references(() => players.id),
   handNumber: integer("hand_number").notNull(),
-  action: text("action", {
-    enum: ["fold", "check", "call", "raise", "all-in"],
-  }).notNull(),
+  action: text("action").notNull(), // "fold" | "check" | "call" | "raise" | "all-in"
   betAmount: integer("bet_amount").default(0),
   winAmount: integer("win_amount").default(0),
-  isSuspicious: boolean("is_suspicious").notNull().default(false),
-  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  isSuspicious: integer("is_suspicious", { mode: "boolean" }).notNull().default(false),
+  timestamp: text("timestamp").notNull().$defaultFn(now),
 });
 
 // --- Alerts ---
-export const alerts = pgTable("alerts", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
-  playerId: uuid("player_id").notNull().references(() => players.id),
-  type: text("type", {
-    enum: ["bot-detected", "multi-accounting", "collusion", "pattern-deviance", "manual"],
-  }).notNull(),
-  severity: text("severity", { enum: ["low", "medium", "high", "critical"] }).notNull(),
+export const alerts = sqliteTable("alerts", {
+  id: text("id").primaryKey().$defaultFn(uid),
+  tenantId: text("tenant_id").notNull().references(() => tenants.id),
+  playerId: text("player_id").notNull().references(() => players.id),
+  type: text("type").notNull(), // "bot-detected" | "multi-accounting" | "collusion" | "pattern-deviance" | "manual"
+  severity: text("severity").notNull(), // "low" | "medium" | "high" | "critical"
   description: text("description").notNull(),
-  isResolved: boolean("is_resolved").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  isResolved: integer("is_resolved", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().$defaultFn(now),
 });
