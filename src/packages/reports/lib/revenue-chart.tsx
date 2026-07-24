@@ -34,12 +34,12 @@ export function RevenueChart({ data }: RevenueChartProps) {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
                 stroke="hsl(var(--muted-foreground))"
                 interval="preserveStartEnd"
               />
               <YAxis
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
                 stroke="hsl(var(--muted-foreground))"
                 tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
               />
