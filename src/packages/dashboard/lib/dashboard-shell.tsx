@@ -11,6 +11,8 @@ import {
   Table2,
   Users,
   BellRing,
+  BarChart3,
+  History,
   LogOut,
   Sun,
   Moon,
@@ -27,6 +29,8 @@ export interface DashboardShellProps {
 const NAV_LINKS = [
   { href: "/tables", label: "Tables", icon: Table2 },
   { href: "/players", label: "Players", icon: Users },
+  { href: "/reports", label: "Reports", icon: BarChart3 },
+  { href: "/sessions", label: "Sessions", icon: History },
   { href: "/alerts", label: "Alerts", icon: BellRing },
 ] as const;
 
