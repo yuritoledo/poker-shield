@@ -3,6 +3,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ShieldHalf } from "lucide-react";
 import { LoginForm } from "@/packages/auth";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/card";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,8 +22,7 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
     try {
-      // ponytail: placeholder — wire up real auth when backend exists
-      console.log("Login attempt", { email, password });
+      router.push("/tables");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
