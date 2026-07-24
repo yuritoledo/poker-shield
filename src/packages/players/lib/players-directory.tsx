@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -12,7 +13,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  AlertTriangle,
   ChevronDown,
   ChevronRight,
   Flag,
@@ -21,23 +21,8 @@ import {
   Plus,
   User,
 } from "lucide-react";
-import type { PlayerRow, PlayerAlert } from "./types";
-import { mockAlerts } from "./mock-alerts";
-
-const SEVERITY_LABEL: Record<string, string> = {
-  critical: "Critical",
-  high: "High",
-  medium: "Medium",
-  low: "Low",
-};
-
-const ALERT_TYPE_LABEL: Record<string, string> = {
-  "bot-detected": "Bot Detected",
-  "multi-accounting": "Multi-Accounting",
-  collusion: "Collusion",
-  "pattern-deviance": "Pattern Deviance",
-  manual: "Manual Report",
-};
+import type { PlayerRow } from "./types";
+import { useAlerts, AlertBadge, AlertList } from "@/packages/alerts";
 
 export interface PlayersDirectoryProps {
   players: PlayerRow[];
@@ -51,6 +36,7 @@ export function PlayersDirectory({
   onScoreAdjust,
 }: PlayersDirectoryProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const allAlerts = useAlerts();
 
   function toggleExpand(id: string) {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -84,7 +70,7 @@ export function PlayersDirectory({
         <TableBody>
           {players.map((player) => {
             const isExpanded = expandedId === player.id;
-            const alerts = mockAlerts[player.id]?.slice(0, 3) ?? [];
+            const alerts = allAlerts[player.id] ?? [];
             return (
               <TableRow
                 key={player.id}
@@ -98,7 +84,18 @@ export function PlayersDirectory({
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   )}
                 </TableCell>
-                <TableCell className="font-medium">{player.alias}</TableCell>
+                <TableCell>
+                  <span className="inline-flex items-center gap-2">
+                    <Link
+                      href={`/players/${player.id}`}
+                      className="font-medium hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {player.alias}
+                    </Link>
+                    <AlertBadge alerts={alerts} />
+                  </span>
+                </TableCell>
                 <TableCell className="text-muted-foreground">
                   {player.tableName}
                 </TableCell>
@@ -120,10 +117,10 @@ export function PlayersDirectory({
                       </Badge>
                     </span>
                   ) : (
-                    <span className="text-muted-foreground text-sm">Clear</span>
+                    <span className="text-sm text-muted-foreground">Clear</span>
                   )}
                 </TableCell>
-                <TableCell className="text-muted-foreground text-xs tabular-nums">
+                <TableCell className="text-xs tabular-nums text-muted-foreground">
                   {formatDate(player.lastActive)}
                 </TableCell>
 
@@ -191,10 +188,8 @@ export function PlayersDirectory({
                             <span className="text-sm font-medium text-muted-foreground">
                               Recent Alerts
                             </span>
-                            <div className="mt-2 space-y-2">
-                              {alerts.map((alert) => (
-                                <AlertCard key={alert.id} alert={alert} />
-                              ))}
+                            <div className="mt-2">
+                              <AlertList alerts={alerts} max={3} />
                             </div>
                           </div>
                         )}
@@ -208,49 +203,6 @@ export function PlayersDirectory({
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-function AlertCard({ alert }: { alert: PlayerAlert }) {
-  return (
-    <div className="flex items-start gap-3 rounded-lg border bg-background p-3">
-      <AlertTriangle
-        className={`mt-0.5 h-4 w-4 shrink-0 ${
-          alert.severity === "critical" || alert.severity === "high"
-            ? "text-destructive"
-            : "text-muted-foreground"
-        }`}
-      />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium">{ALERT_TYPE_LABEL[alert.type]}</span>
-          <SeverityBadge severity={alert.severity} />
-        </div>
-        <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
-          {alert.description}
-        </p>
-        <p className="mt-1 text-[10px] text-muted-foreground/60">
-          {formatDate(alert.createdAt)}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function SeverityBadge({ severity }: { severity: string }) {
-  return (
-    <Badge
-      variant={
-        severity === "critical" || severity === "high"
-          ? "destructive"
-          : severity === "medium"
-            ? "secondary"
-            : "outline"
-      }
-      className="text-[10px] px-1.5 py-0"
-    >
-      {SEVERITY_LABEL[severity] ?? severity}
-    </Badge>
   );
 }
 

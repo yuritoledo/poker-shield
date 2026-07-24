@@ -113,8 +113,8 @@ describe("PlayersDirectory expanded row", () => {
         onScoreAdjust={() => {}}
       />,
     );
-    // BluffMaster is not flagged, so shows "Flag as Suspicious"
-    await user.click(screen.getByText("BluffMaster"));
+    // Click on handsPlayed cell to expand (alias is now a Link)
+    await user.click(screen.getByText("189"));
     expect(screen.getByText("Flag as Suspicious")).toBeInTheDocument();
   });
 
@@ -127,7 +127,8 @@ describe("PlayersDirectory expanded row", () => {
         onScoreAdjust={() => {}}
       />,
     );
-    await user.click(screen.getByText("RiverKing"));
+    // Click on handsPlayed cell to expand (alias is now a Link)
+    await user.click(screen.getByText("342"));
     expect(screen.getByText("Clear Flag")).toBeInTheDocument();
   });
 
@@ -140,7 +141,8 @@ describe("PlayersDirectory expanded row", () => {
         onScoreAdjust={() => {}}
       />,
     );
-    await user.click(screen.getByText("RiverKing"));
+    // Click on handsPlayed cell to expand (alias is now a Link)
+    await user.click(screen.getByText("342"));
     expect(screen.getByText("Recent Alerts")).toBeInTheDocument();
     expect(screen.getByText("Bot Detected")).toBeInTheDocument();
   });
@@ -155,7 +157,8 @@ describe("PlayersDirectory expanded row", () => {
         onScoreAdjust={() => {}}
       />,
     );
-    await user.click(screen.getByText("RiverKing"));
+    // Click on handsPlayed cell to expand (alias is now a Link)
+    await user.click(screen.getByText("342"));
     await user.click(screen.getByText("Clear Flag"));
     expect(onFlagToggle).toHaveBeenCalledWith("p1");
   });
@@ -170,8 +173,8 @@ describe("PlayersDirectory expanded row", () => {
         onScoreAdjust={onScoreAdjust}
       />,
     );
-    await user.click(screen.getByText("RiverKing"));
-
+    // Click on handsPlayed cell to expand (alias is now a Link)
+    await user.click(screen.getByText("342"));
     const minusButtons = screen.getAllByRole("button");
     const minusBtn = minusButtons.find(
       (b) => b.innerHTML.includes("Minus") || b.querySelector('[class*="lucide-minus"]'),

@@ -1,14 +1,7 @@
 // View-model types for the Players directory.
 // Decoupled from the Drizzle ORM schema — the UI never imports from the ORM.
 
-export type AlertType =
-  | "bot-detected"
-  | "multi-accounting"
-  | "collusion"
-  | "pattern-deviance"
-  | "manual";
-
-export type AlertSeverity = "low" | "medium" | "high" | "critical";
+export type { AlertType, AlertSeverity, PlayerAlert } from "@/packages/alerts";
 
 /** A player row as shown in the directory list. */
 export interface PlayerRow {
@@ -22,14 +15,6 @@ export interface PlayerRow {
   lastActive: string; // ISO date
 }
 
-/** An alert attached to a player (shown in expanded row). */
-export interface PlayerAlert {
-  id: string;
-  type: AlertType;
-  severity: AlertSeverity;
-  description: string;
-  createdAt: string; // ISO date
-}
 
 /** Filter state for the player directory. */
 export interface PlayerFilters {
@@ -37,4 +22,24 @@ export interface PlayerFilters {
   scoreMax: number | null;
   dateFrom: string | null;
   dateTo: string | null;
+}
+
+/** A single play session at a table. */
+export interface PlayerSession {
+  tableId: string;
+  tableName: string;
+  gameType: string;
+  handsPlayed: number;
+  buyIn: number;
+  netResult: number;
+  startedAt: string; // ISO date
+  endedAt: string; // ISO date
+}
+
+/** A recorded score change for the timeline. */
+export interface ScoreChange {
+  timestamp: string; // ISO date
+  previousScore: number;
+  newScore: number;
+  reason: string;
 }
