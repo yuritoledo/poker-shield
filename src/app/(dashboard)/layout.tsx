@@ -3,8 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { DashboardShell } from "@/packages/dashboard";
+import { DashboardShell, DashboardSkeleton } from "@/packages/dashboard";
 
 import { useAuthStore } from "@/packages/auth";
 export default function DashboardLayout({
@@ -22,11 +21,7 @@ export default function DashboardLayout({
   }, [session, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div role="status" className="flex min-h-screen items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!session) return null;

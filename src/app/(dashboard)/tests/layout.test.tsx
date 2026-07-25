@@ -39,7 +39,7 @@ describe("DashboardLayout auth guard", () => {
     expect(screen.queryByText("dashboard content")).not.toBeInTheDocument();
   });
 
-  it("shows loading spinner while auth is loading", () => {
+  it("shows skeleton while auth is loading", () => {
     useAuthStore.setState({ session: null, isLoading: true });
 
     render(
