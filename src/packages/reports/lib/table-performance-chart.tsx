@@ -35,11 +35,11 @@ export function TablePerformanceChart({ data }: TablePerformanceChartProps) {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis
                 dataKey="tableName"
-                tick={{ fontSize: 10, fill: "hsl(var(--foreground))" }}
+                tick={{ fontSize: 10, fill: "#e2e8f0" }}
                 stroke="hsl(var(--muted-foreground))"
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
+                tick={{ fontSize: 11, fill: "#e2e8f0" }}
                 stroke="hsl(var(--muted-foreground))"
                 tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
               />

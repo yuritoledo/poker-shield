@@ -5,14 +5,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldHalf } from "lucide-react";
-import { LoginForm } from "@/packages/auth";
+import { LoginForm, useAuthStore } from "@/packages/auth";
+import type { Session } from "@/packages/auth";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +22,18 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
     try {
+      const session: Session = {
+        user: {
+          id: crypto.randomUUID(),
+          email,
+          name: email.split("@")[0],
+          role: "operator",
+          tenantId: "default",
+        },
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      };
+      useAuthStore.getState().setSession(session);
+      document.cookie = "session=true;path=/;max-age=86400;samesite=lax";
       router.push("/tables");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
