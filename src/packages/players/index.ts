@@ -7,4 +7,5 @@ export { PlayersDirectory } from "./lib/players-directory";
 export { PlayersFilterBar } from "./lib/players-filter-bar";
 export { filterPlayers } from "./lib/filtering";
 export { getPlayers, flagPlayer, adjustScore, subscribe, resetStore } from "./lib/mock-store";
-export { usePlayersQuery, invalidatePlayersQuery, apiFlagPlayer, apiAdjustScore } from "./lib/use-players-query";
+export { fetchPlayers, apiFlagPlayer, apiAdjustScore } from "./lib/api";
+export { usePlayersQuery, invalidatePlayersQuery } from "./lib/use-players-query";
