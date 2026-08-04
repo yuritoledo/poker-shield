@@ -33,6 +33,7 @@ adding another prop to the existing one. 3-5 props is a sweet spot;
   everywhere else.
 - Destructure props in the function signature for 1-2 props. For 3+, use
   `const {} = props` in the component body instead.
+- Do not add comments; code should explain by itself.
 
 ## Deep Modules
 
