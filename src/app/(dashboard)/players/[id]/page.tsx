@@ -3,8 +3,7 @@
 import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { usePlayersQuery, invalidatePlayersQuery, apiFlagPlayer, apiAdjustScore } from "@/packages/players";
-import { useQueryClient } from "@tanstack/react-query";
+import { usePlayersQuery, useFlagPlayerMutation, useAdjustScoreMutation } from "@/packages/players";
 import { PlayerDetail } from "@/packages/players/lib/player-detail";
 import { mockSessions, mockScoreChanges } from "@/packages/players/lib/mock-detail-data";
 
@@ -14,19 +13,18 @@ export default function PlayerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const queryClient = useQueryClient();
+  const flagMutation = useFlagPlayerMutation();
+  const scoreMutation = useAdjustScoreMutation();
   const { data: players, isLoading, isError, refetch } = usePlayersQuery();
 
   const player = players?.find((p) => p.id === id);
 
-  async function handleFlagToggle(playerId: string) {
-    await apiFlagPlayer(playerId);
-    invalidatePlayersQuery(queryClient);
+  function handleFlagToggle(playerId: string) {
+    flagMutation.mutate(playerId);
   }
 
-  async function handleScoreAdjust(playerId: string, delta: number) {
-    await apiAdjustScore(playerId, delta);
-    invalidatePlayersQuery(queryClient);
+  function handleScoreAdjust(playerId: string, delta: number) {
+    scoreMutation.mutate({ playerId, delta });
   }
 
   if (isLoading) {

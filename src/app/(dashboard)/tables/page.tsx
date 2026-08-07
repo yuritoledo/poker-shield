@@ -1,20 +1,20 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import { Table2, Activity, Flag } from "lucide-react";
 import {
   TablesDashboard,
   TablesFilterBar,
   applyFilters,
-  getTables,
-  toggleTable,
-  subscribe,
+  useTablesQuery,
+  useToggleTableMutation,
 } from "@/packages/tables-dashboard";
 import type { TableFilters } from "@/packages/tables-dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function TablesPage() {
-  const tables = useSyncExternalStore(subscribe, getTables, getTables);
+  const { data: tables = [], isLoading, isError, refetch } = useTablesQuery();
+  const toggleMutation = useToggleTableMutation();
   const [filters, setFilters] = useState<TableFilters>({
     gameType: "all",
     stakes: "all",
@@ -40,6 +40,28 @@ export default function TablesPage() {
     () => tables.reduce((sum, t) => sum + t.flaggedPlayerCount, 0),
     [tables],
   );
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <p className="text-sm text-muted-foreground">Loading tables…</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+        <p className="text-sm text-destructive">Failed to load tables.</p>
+        <button
+          onClick={() => refetch()}
+          className="text-sm underline text-muted-foreground hover:text-foreground"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -94,9 +116,7 @@ export default function TablesPage() {
       />
       <TablesDashboard
         tables={filteredTables}
-        onToggle={(id) => {
-          toggleTable(id);
-        }}
+        onToggle={(id) => toggleMutation.mutate(id)}
       />
     </div>
   );

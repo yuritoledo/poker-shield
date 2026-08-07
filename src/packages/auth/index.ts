@@ -5,3 +5,4 @@ export { requireAccess } from "./lib/access-control";
 export { LoginForm } from "./lib/login-form";
 export { useAuthStore } from "./lib/auth-store";
 export type { Role, Session } from "./lib/types";
+export { useLoginMutation } from "./lib/use-login-mutation";

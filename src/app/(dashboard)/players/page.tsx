@@ -1,20 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   PlayersDirectory,
   PlayersFilterBar,
   filterPlayers,
   usePlayersQuery,
-  invalidatePlayersQuery,
-  apiFlagPlayer,
-  apiAdjustScore,
+  useFlagPlayerMutation,
+  useAdjustScoreMutation,
 } from "@/packages/players";
 import type { PlayerFilters } from "@/packages/players";
 
 export default function PlayersPage() {
-  const queryClient = useQueryClient();
+  const flagMutation = useFlagPlayerMutation();
+  const scoreMutation = useAdjustScoreMutation();
   const {
     data: players,
     isLoading,
@@ -33,14 +32,12 @@ export default function PlayersPage() {
     [players, filters],
   );
 
-  async function handleFlagToggle(id: string) {
-    await apiFlagPlayer(id);
-    invalidatePlayersQuery(queryClient);
+  function handleFlagToggle(id: string) {
+    flagMutation.mutate(id);
   }
 
-  async function handleScoreAdjust(id: string, delta: number) {
-    await apiAdjustScore(id, delta);
-    invalidatePlayersQuery(queryClient);
+  function handleScoreAdjust(id: string, delta: number) {
+    scoreMutation.mutate({ playerId: id, delta });
   }
 
   if (isLoading) {

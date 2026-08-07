@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Poker Shield
 
-## Getting Started
+A full-stack Next.js dashboard for tracking poker-room players, tables,
+alerts, and suspicious activity. Built as a solo project with a deep-module
+architecture and TanStack Query for all async state.
 
-First, run the development server:
+**Tech stack:** Next.js 16, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui,
+TanStack Query v5, Zustand v5, Drizzle ORM, better-auth, Better SQLite3,
+Recharts, Vitest.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Architecture
+
+The codebase follows the **deep-module** pattern — every package under
+`src/packages/` exposes a small public entry point (`index.ts`) and keeps its
+implementation private in `lib/`. Outside code never imports from a package's
+subfolders. Dependency-cruiser enforces this at build time.
+
+| Package | Responsibility |
+|---------|---------------|
+| `auth` | Login form, auth store, access control |
+| `dashboard` | Sidebar shell, header, logout |
+| `alerts` | Alert badges, alert list components |
+| `players` | Player directory, player detail, filtering, mutations |
+| `tables` | Drizzle schema and DB queries (ORM layer) |
+| `tables-dashboard` | Tables list, filtering, toggle mutations |
+| `reports` | Charts and stats (Recharts) |
+| `sessions` | Session history table, stats bar |
+| `example` | Greet function + mutation conventions walkthrough |
+
+See [src/packages/README.md](src/packages/README.md) for the full deep-module
+rules.
+
+## Getting started
+
+```sh
+git clone <repo-url>
+cd poker-shield
+npm install
+npm run dev          # starts on http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Login is placeholdered — any email/password combination creates a session.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build (type-check + lint) |
+| `npm run test` | Run Vitest test suite |
+| `npm run test:watch` | Watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run lint` | ESLint across the project |
+| `npm run lint:boundaries` | Check deep-module import rules |
 
-## Learn More
+## Adding new write paths
 
-To learn more about Next.js, take a look at the following resources:
+See [Mutation Hook Conventions](src/packages/example/lib/mutation-conventions.md)
+for the TanStack Query mutation pattern used across all packages. Covers POST,
+PATCH, and DELETE write paths with code examples and a checklist.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Known limitations
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Auth** is a placeholder — any credentials create a session. Replace with
+  better-auth or Auth.js when integrating a real backend.
+- **API routes** fall back to in-memory mock stores when the DB is unavailable.
+- **No E2E tests** yet — Vitest covers unit + integration; Playwright is on the
+  roadmap.
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Run `npm run lint:boundaries` before pushing — import-boundary violations
+   block the build.
+2. Tests use Vitest. Write tests through package entry points only (same rule
+   as application code).
+3. Prefer TanStack Query hooks over raw fetch calls for all async state.
+   See the [mutation conventions](src/packages/example/lib/mutation-conventions.md)
+   for the established pattern.

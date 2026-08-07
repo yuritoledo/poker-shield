@@ -2,11 +2,10 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldHalf } from "lucide-react";
-import { LoginForm, useAuthStore } from "@/packages/auth";
-import type { Session } from "@/packages/auth";
+import { LoginForm, useLoginMutation } from "@/packages/auth";
 import {
   Card,
   CardContent,
@@ -15,31 +14,14 @@ import {
 } from "@/components/ui/card";
 export default function LoginPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const loginMutation = useLoginMutation();
 
-  async function handleLogin(email: string, password: string) {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const session: Session = {
-        user: {
-          id: crypto.randomUUID(),
-          email,
-          name: email.split("@")[0],
-          role: "operator",
-          tenantId: "default",
-        },
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      };
-      useAuthStore.getState().setSession(session);
-      document.cookie = "session=true;path=/;max-age=86400;samesite=lax";
-      router.push("/tables");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    if (loginMutation.isSuccess) router.push("/tables");
+  }, [loginMutation.isSuccess, router]);
+
+  function handleLogin(email: string, password: string) {
+    loginMutation.mutate({ email, password });
   }
 
   return (
@@ -66,8 +48,8 @@ export default function LoginPage() {
         <CardContent>
           <LoginForm
             onLogin={handleLogin}
-            error={error}
-            isLoading={isLoading}
+            error={loginMutation.error?.message ?? null}
+            isLoading={loginMutation.isPending}
           />
         </CardContent>
       </Card>

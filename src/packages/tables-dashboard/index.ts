@@ -7,3 +7,6 @@ export { TablesDashboard } from "./lib/tables-dashboard";
 export { TablesFilterBar } from "./lib/tables-filter-bar";
 export { applyFilters } from "./lib/filtering";
 export { getTables, toggleTable, subscribe } from "./lib/mock-store";
+export { fetchTables, apiToggleTable } from "./lib/api";
+export { useTablesQuery, TABLES_QUERY_KEY } from "./lib/use-tables-query";
+export { useToggleTableMutation } from "./lib/use-toggle-table-mutation";

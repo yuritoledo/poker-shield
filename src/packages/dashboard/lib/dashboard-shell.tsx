@@ -68,6 +68,7 @@ export function DashboardShell({
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "border-l-2 border-primary pl-3 text-primary"

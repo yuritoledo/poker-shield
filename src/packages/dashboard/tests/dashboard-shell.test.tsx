@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -63,6 +63,21 @@ describe("DashboardShell", () => {
     );
 
     const playersLink = screen.getByRole("link", { name: /players/i });
-    expect(playersLink.className).toContain("text-primary");
+    expect(playersLink).toHaveAttribute("aria-current", "page");
+  });
+
+  it("does not set aria-current on inactive nav links", () => {
+    render(
+      <DashboardShell
+        user={{ name: "Yuri" }}
+        onLogout={async () => {}}
+        currentPath="/players"
+      >
+        <div>content</div>
+      </DashboardShell>,
+    );
+
+    const tablesLink = screen.getByRole("link", { name: /tables/i });
+    expect(tablesLink).not.toHaveAttribute("aria-current");
   });
 });

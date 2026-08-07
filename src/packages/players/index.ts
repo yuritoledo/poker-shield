@@ -9,3 +9,5 @@ export { filterPlayers } from "./lib/filtering";
 export { getPlayers, flagPlayer, adjustScore, subscribe, resetStore } from "./lib/mock-store";
 export { fetchPlayers, apiFlagPlayer, apiAdjustScore } from "./lib/api";
 export { usePlayersQuery, invalidatePlayersQuery } from "./lib/use-players-query";
+export { useFlagPlayerMutation } from "./lib/use-flag-player-mutation";
+export { useAdjustScoreMutation } from "./lib/use-adjust-score-mutation";
